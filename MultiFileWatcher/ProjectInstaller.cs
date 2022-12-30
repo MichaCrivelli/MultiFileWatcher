@@ -21,5 +21,10 @@ namespace MultiFileWatcher
         {
             new ServiceController(serviceInstaller1.ServiceName).Start();
         }
+
+        private void serviceInstaller1_BeforeUninstall(object sender, InstallEventArgs e)
+        {
+            new ServiceController(serviceInstaller1.ServiceName).Stop();
+        }
     }
 }

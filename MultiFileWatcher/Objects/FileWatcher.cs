@@ -13,15 +13,16 @@ namespace MultiFileWatcher
 {
     public class FileWatcher
     {
-        private const string programmName = "ChangeLogger";
+        private const string programmName = "MultiFileWatcher";
         private string settingsFileName = "FileWatcherSettings.config";
         private string repositoriesFileName = "Repositories.config";
         private string logFolderName = "ChangeLogs";
 
-        private string systemFolderPath => Path.Combine(Environment.GetFolderPath(SpecialFolder.ApplicationData), programmName);
-        private string systemSettingsFilePath => Path.Combine(Environment.GetFolderPath(SpecialFolder.ApplicationData), programmName, settingsFileName);
-        private string repositoriesFilePath => Path.Combine(Environment.GetFolderPath(SpecialFolder.ApplicationData), programmName, repositoriesFileName);
-        private string logFolderPath => Path.Combine(Environment.GetFolderPath(SpecialFolder.ApplicationData), programmName, logFolderName);
+        private string systemRoot;
+        private string systemFolderPath => Path.Combine(systemRoot, programmName);
+        private string systemSettingsFilePath => Path.Combine(systemRoot, programmName, settingsFileName);
+        private string repositoriesFilePath => Path.Combine(systemRoot, programmName, repositoriesFileName);
+        private string logFolderPath => Path.Combine(systemRoot, programmName, logFolderName);
 
         private FileSystemWatcher registeredFileWatcher;
         private Dictionary<string, WatchedRepository> watchingRepositories;
@@ -35,17 +36,20 @@ namespace MultiFileWatcher
 
         public FileWatcher()
         {
+            systemRoot = Path.GetPathRoot(Directory.GetCurrentDirectory());
             watchingRepositories = new Dictionary<string, WatchedRepository>();
             buffersToWrite = new List<WatchedRepository>();
 
-            CreateConfigWatcher();
             CheckSystemFolder();
+            CreateConfigWatcher();
 
             tryToReadTimer = new Timer(1000) { AutoReset = true };
             tryToReadTimer.Elapsed += TryRead;
 
             writeTimer = new Timer(100) { AutoReset = true };
             writeTimer.Elapsed += WriteBuffers;
+
+            //File.AppendAllLines("D:\\started.txt", new string[] { systemFolderPath });
         }
 
         /// <summary>
@@ -116,7 +120,7 @@ namespace MultiFileWatcher
                     string.Join(":",repo.Exclusions),
                     repo.LocalPath
                 };
-                lines.Add(string.Join(" | ",data));
+                lines.Add(string.Join(" | ", data));
             }
 
             return lines.ToArray();
@@ -162,6 +166,8 @@ namespace MultiFileWatcher
         public void Start()
         {
             Console.WriteLine("FileWatcher started");
+            CheckSystemFolder();
+            CreateConfigWatcher();
             ReadRegisteredRepos();
         }
 
@@ -189,7 +195,7 @@ namespace MultiFileWatcher
                     {
                         if (repoString.Length > 0 && repoString[0] != '#')
                         {
-                            string[] repoData = repoString.Split(new string[] { " | " },StringSplitOptions.None); // 0: RepoName, 1: FileWatcherAction, 2: Exclusions, 3: LocalPath
+                            string[] repoData = repoString.Split(new string[] { " | " }, StringSplitOptions.None); // 0: RepoName, 1: FileWatcherAction, 2: Exclusions, 3: LocalPath
                             if (repoData.Length >= 4)
                             {
                                 Console.WriteLine("");
@@ -199,8 +205,8 @@ namespace MultiFileWatcher
 
                                 if ((repoData[1] == "PAUSED" || repoData[1] == "WATCHING") && Directory.Exists(repoData[3]))
                                 {
-                                    string[] exclusions = repoData[2].Split(new char[] { ':' },StringSplitOptions.RemoveEmptyEntries);
-                                    
+                                    string[] exclusions = repoData[2].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+
                                     // Create SystemFileWatcher if not existing
                                     if (!watchingRepositories.ContainsKey(repoData[0]))
                                     {

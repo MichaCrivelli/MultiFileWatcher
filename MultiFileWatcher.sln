@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiFileWatcher", "MultiFileWatcher\MultiFileWatcher.csproj", "{2E4602E4-4B60-4676-8BDD-CEB3BEF8B871}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MultiFileWatcher Service", "MultiFileWatcher Service\MultiFileWatcher Service.vdproj", "{256D55D5-9F01-4BFF-B135-B898FAD0ABD7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,8 @@ Global
 		{2E4602E4-4B60-4676-8BDD-CEB3BEF8B871}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E4602E4-4B60-4676-8BDD-CEB3BEF8B871}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E4602E4-4B60-4676-8BDD-CEB3BEF8B871}.Release|Any CPU.Build.0 = Release|Any CPU
+		{256D55D5-9F01-4BFF-B135-B898FAD0ABD7}.Debug|Any CPU.ActiveCfg = Debug
+		{256D55D5-9F01-4BFF-B135-B898FAD0ABD7}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
